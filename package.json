@@ -1,15 +1,23 @@
 {
-  "name": "web-veterinaria",
-  "version": "0.0.0",
+  "name": "web_veterinaria",
+  "version": "1.0.0",
+  "description": "This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.2.",
+  "main": "index.js",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "private": true,
-  "packageManager": "npm@11.12.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DMau1420/web_veterinaria.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/DMau1420/web_veterinaria/issues"
+  },
+  "homepage": "https://github.com/DMau1420/web_veterinaria#readme",
   "dependencies": {
     "@angular/common": "^21.2.5",
     "@angular/compiler": "^21.2.5",
@@ -17,23 +25,16 @@
     "@angular/forms": "^21.2.5",
     "@angular/platform-browser": "^21.2.5",
     "@angular/router": "^21.2.5",
-    "chart.js": "^4.5.1",
-    "ng2-charts": "^10.0.0",
-    "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "@fortawesome/fontawesome-free": "^7.2.0",
+    "fontawesome": "^5.6.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^21.2.3",
-    "@angular/build": "^21.2.3",
-    "@angular/cli": "^21.2.3",
+    "@angular-devkit/build-angular": "^21.2.0",
+    "@angular/build": "^20.3.21",
+    "@angular/cli": "^21.2.0",
     "@angular/compiler-cli": "^21.2.5",
     "@tailwindcss/postcss": "^4.2.2",
     "autoprefixer": "^10.4.27",
-    "jsdom": "^28.0.0",
-    "postcss": "^8.5.8",
-    "prettier": "^3.8.1",
-    "tailwindcss": "^4.2.2",
-    "typescript": "~5.9.2",
-    "vitest": "^4.0.8"
+    "postcss": "^8.5.8"
   }
 }
