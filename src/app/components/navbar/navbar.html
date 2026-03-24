@@ -1,0 +1,38 @@
+<header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-vet-primary rounded-full flex items-center justify-center text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                </div>
+                <span class="text-2xl font-bold text-slate-900">Citas Veterinaria</span> 
+            </div>
+
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#servicios" class="text-slate-600 hover:text-blue-500 transition-colors font-medium">
+                    Servicios
+                </a> 
+                <a href="#nosotros" class="text-slate-600 hover:text-blue-500 transition-colors font-medium">
+                    Nosotros
+                </a> 
+                <a href="#contacto" class="text-slate-600 hover:text-blue-500 transition-colors font-medium">
+                    Contacto
+                </a> 
+                
+                <button
+                    (click)="onLogin()"
+                    class="px-6 py-2 bg-vet-primary text-white rounded-lg bg-blue-700 hover:bg-blue-500 transition-all shadow-md font-semibold">
+                    Iniciar Sesión
+                </button> 
+            </nav>
+
+            <div class="md:hidden">
+                <button class="text-slate-600 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>

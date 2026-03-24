@@ -1,0 +1,78 @@
+<div class="flex min-h-screen bg-white font-sans">
+  <div class="hidden lg:flex w-1/2 bg-cover bg-center relative">
+    <div class="absolute inset-0 bg-black/30"></div>
+    <div class="absolute bottom-12 left-12 text-white z-10">
+      <h2 class="text-4xl font-bold mb-2">Cuidamos de tus mascotas</h2> 
+      <p class="text-lg opacity-90 text-slate-100">Agenda citas y gestiona la salud de tus compañeros peludos</p> 
+    </div>
+  </div>
+
+  <div class="w-full lg:w-1/2 flex items-center justify-center p-8 md:p-16">
+    <div class="max-w-md w-full space-y-8">
+      <div class="text-center">
+        <div class="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full text-vet-primary mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-900">Bienvenido</h2> 
+        <p class="text-slate-500 mt-2">Inicia sesión en tu cuenta de VetCitas</p> 
+      </div>
+
+      <form class="mt-8 space-y-5">
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Email</label> 
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </span>
+            <input type="email" placeholder="tu@email.com" 
+                   [cite_start]class="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-vet-primary focus:border-transparent outline-none transition-all"> 
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Contraseña</label> 
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </span>
+            <input type="password" placeholder="••••••••" 
+                   [cite_start]class="block w-full pl-10 pr-10 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-vet-primary focus:border-transparent outline-none transition-all"> 
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-sm">
+          <label class="flex items-center text-slate-600">
+            <input type="checkbox" class="rounded border-slate-300 text-vet-primary focus:ring-vet-primary mr-2">
+            Recordarme 
+          </label>
+          <a href="#" class="font-medium text-vet-primary hover:text-blue-700">¿Olvidaste tu contraseña?</a> 
+        </div>
+
+        <button type="submit" 
+                class="w-full bg-vet-primary text-white font-bold py-3 px-4 rounded-xl hover:bg-blue-700 transition-colors shadow-lg">
+          Iniciar Sesión 
+        </button>
+
+        <div class="relative my-6">
+          <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200"></div></div>
+          <div class="relative flex justify-center text-sm"><span class="px-2 bg-white text-slate-400">O continúa con</span></div> 
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <button type="button" class="flex items-center justify-center py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+            <img src="assets/google-icon.svg" class="h-5 w-5 mr-2" alt="Google"> Google 
+          </button>
+          <button type="button" class="flex items-center justify-center py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+            <img src="assets/fb-icon.svg" class="h-5 w-5 mr-2" alt="Facebook"> Facebook 
+          </button>
+        </div>
+      </form>
+
+      <p class="text-center text-sm text-slate-600 mt-8">
+        ¿No tienes una cuenta? <a href="/register" class="font-bold text-vet-primary hover:underline">Regístrate aquí</a> 
+      </p>
+    </div>
+  </div>
+</div>
