@@ -1,0 +1,115 @@
+<div class="flex h-screen bg-slate-50 font-sans">
+  
+  <!-- Sidebar -->
+  <app-sidebar-admin></app-sidebar-admin>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col overflow-hidden">
+    
+    <!-- Header -->
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-0">
+      <h1 class="text-2xl font-bold text-slate-800">Pacientes</h1>
+      <div class="flex items-center gap-4">
+        <button class="p-2 text-slate-400 hover:bg-slate-100 rounded-full transition-colors text-xl">🔔</button>
+        <div class="flex items-center gap-3 border-l border-slate-200 pl-4">
+          <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold">A</div>
+          <div class="hidden md:block text-sm">
+            <p class="font-bold text-slate-700">Admin</p>
+            <p class="text-slate-500 text-xs">Administrador</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Patients Content -->
+    <div class="flex-1 overflow-y-auto p-4 md:p-8">
+      
+      <!-- Patients Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-slate-200 flex justify-between items-center">
+          <h2 class="text-lg font-bold text-slate-800">Directorio de Pacientes</h2>
+          <button (click)="abrirModal()" class="bg-blue-500 text-white text-sm font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors shadow-sm">
+            + Nuevo Paciente
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-slate-500 text-sm border-b border-slate-200">
+                <th class="p-4 font-semibold">ID / Nombre</th>
+                <th class="p-4 font-semibold">Especie y Raza</th>
+                <th class="p-4 font-semibold">Dueño</th>
+                <th class="p-4 font-semibold">Teléfono</th>
+                <th class="p-4 font-semibold">Estado</th>
+                <th class="p-4 font-semibold">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="text-sm">
+              @for (paciente of listaPacientes; track paciente.id) {
+                <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer">
+                  <td class="p-4 font-medium text-slate-800">{{ paciente.id }} - {{ paciente.nombre }}</td>
+                  <td class="p-4 text-slate-600">{{ paciente.especie }} ({{ paciente.raza }})</td>
+                  <td class="p-4 text-slate-600">{{ paciente.dueno }}</td>
+                  <td class="p-4 text-slate-600">{{ paciente.telefono }}</td>
+                  <td class="p-4"><span class="px-3 py-1 rounded-full text-xs font-bold border" [class]="paciente.estado === 'Activo' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-slate-100 text-slate-600 border-slate-200'">{{ paciente.estado }}</span></td>
+                  <td class="p-4 flex gap-2">
+                    <button (click)="abrirModal(paciente); $event.stopPropagation()" class="text-blue-600 hover:text-blue-800 font-semibold text-xs bg-blue-50 px-2 py-1 rounded">Editar</button>
+                    <button (click)="eliminarPaciente(paciente.id); $event.stopPropagation()" class="text-red-500 hover:text-red-700 font-semibold text-xs bg-red-50 px-2 py-1 rounded">Eliminar</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal de Nuevo/Editar Paciente -->
+  @if (mostrarModal) {
+    <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
+        <h2 class="text-2xl font-extrabold text-slate-800 mb-6 flex items-center gap-2"><span>🐕</span> {{ modoEdicion ? 'Editar Paciente' : 'Nuevo Paciente' }}</h2>
+        
+        <form (ngSubmit)="guardarPaciente()" class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Nombre del Paciente</label>
+            <input type="text" [(ngModel)]="nuevoPaciente.nombre" name="nombre" required class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Especie</label>
+              <input type="text" [(ngModel)]="nuevoPaciente.especie" name="especie" required class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Raza</label>
+              <input type="text" [(ngModel)]="nuevoPaciente.raza" name="raza" class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Dueño</label>
+            <input type="text" [(ngModel)]="nuevoPaciente.dueno" name="dueno" required class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Teléfono</label>
+              <input type="tel" [(ngModel)]="nuevoPaciente.telefono" name="telefono" required class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Estado</label>
+              <select [(ngModel)]="nuevoPaciente.estado" name="estado" class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-white">
+                <option value="Activo">Activo</option>
+                <option value="Inactivo">Inactivo</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="flex justify-end gap-3 mt-8">
+            <button type="button" (click)="cerrarModal()" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">Cancelar</button>
+            <button type="submit" class="px-5 py-2.5 rounded-xl font-bold text-white bg-blue-500 hover:bg-blue-600 transition-colors shadow-sm">Guardar Paciente</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>
