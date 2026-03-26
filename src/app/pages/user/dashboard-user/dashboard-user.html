@@ -1,114 +1,195 @@
 <div class="flex h-screen bg-slate-50 font-sans">
   
-  <!-- Sidebar del Usuario (asumiendo que crearás o tienes un app-sidebar-user) -->
-  <!-- Si aún usas el de admin temporalmente, puedes cambiarlo por <app-sidebar-admin></app-sidebar-admin> -->
-  <!-- <app-sidebar-user></app-sidebar-user>  -->
+  <app-sidebar-user></app-sidebar-user>
 
   <!-- Main Content -->
   <main class="flex-1 flex flex-col overflow-hidden">
     
     <!-- Header -->
     <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-0 shrink-0">
-      <h1 class="text-2xl font-bold text-slate-800">Mi Panel</h1>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">Resumen de Cuenta</h1>
       <div class="flex items-center gap-4">
         <div class="flex items-center gap-3 border-l border-slate-200 pl-4">
-          <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold">
-            C
-          </div>
           <div class="hidden md:block text-sm">
-            <p class="font-bold text-slate-700">Mau</p>
+            <p class="font-bold text-slate-700">Mauricio Sandoval</p>
             <p class="text-slate-500 text-xs">Cliente</p>
+          </div>
+          <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold border border-blue-200 shadow-sm">
+            MS
           </div>
         </div>
       </div>
     </header>
 
     <!-- Dashboard Content -->
-    <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8">
+    <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 pb-12">
       
-      <!-- Welcome Section -->
-      <div>
-        <h2 class="text-xl font-bold text-slate-800">¡Hola, Mau! 👋</h2>
-        <p class="text-slate-500">Aquí tienes el resumen de tus mascotas y tus próximas citas.</p>
+      <!-- Banner Bienvenida -->
+      <div class="bg-sky-300 from-blue-600 to-blue-400 rounded-3xl p-8 md:p-10 text-white shadow-lg shadow-blue-500/30 flex justify-between items-center relative overflow-hidden">
+        <div class="relative z-10">
+          <h2 class="text-3xl font-extrabold mb-2">¡Hola, Mau! 👋</h2>
+          <p class="text-blue-100 text-lg md:w-3/4">Tienes <span class="font-bold text-white">1 cita programada</span> para esta semana. No olvides revisar el historial de vacunación de tus mascotas.</p>
+          <button (click)="abrirModalCita()" class="mt-6 px-6 py-2.5 bg-white text-blue-600 font-bold rounded-xl shadow-sm hover:bg-slate-50 transition-colors">
+            Agendar nueva cita
+          </button>
+        </div>
+        <div class="hidden lg:block text-8xl absolute right-10 top-1/2 -translate-y-1/2 opacity-80 z-0">🏥</div>
+        <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
       </div>
 
       <!-- Mascotas Cards Section -->
       <section>
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-lg font-bold text-slate-800">Mis Mascotas</h2>
-          <button class="text-sm text-blue-600 font-medium hover:text-blue-800 transition-colors">+ Añadir Mascota</button>
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-extrabold text-slate-800">Mis Mascotas</h2>
+          <button (click)="abrirModalMascota()" class="text-sm px-4 py-2 bg-slate-100 text-blue-600 font-bold rounded-xl hover:bg-slate-200 transition-colors flex items-center gap-2">
+            <span>+</span> Añadir Mascota
+          </button>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Card Mascota 1 -->
-          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 hover:shadow-md transition-shadow flex flex-col gap-4">
-            <div class="flex items-center gap-4">
-              <div class="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center text-3xl">🐱</div>
-              <div>
-                <h3 class="text-xl font-bold text-slate-800">Michi</h3>
-                <p class="text-sm text-slate-500">Gato • Mestizo • 3 años</p>
+          @for (mascota of mascotas; track mascota.id) {
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
+              <div class="h-24 {{ mascota.colorBg }} flex items-center justify-center relative">
+                <div class="absolute -bottom-8 w-20 h-20 rounded-2xl bg-white border-4 border-white shadow-sm flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">{{ mascota.icono }}</div>
+              </div>
+              <div class="pt-10 pb-6 px-6 flex flex-col items-center text-center">
+                <h3 class="text-2xl font-bold text-slate-800">{{ mascota.nombre }}</h3>
+                <p class="text-sm text-slate-500 font-medium mb-4">{{ mascota.especie }} • {{ mascota.raza }} • {{ mascota.edad }} años</p>
+                
+                <div class="w-full grid grid-cols-2 gap-2 bg-slate-50 rounded-xl p-3 mb-4">
+                  <div class="text-left">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Vacuna</p>
+                    <p class="text-sm font-semibold text-slate-700">{{ mascota.proximaVacuna || 'Sin registro' }}</p>
+                  </div>
+                  <div class="text-left border-l border-slate-200 pl-3">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Peso</p>
+                    <p class="text-sm font-semibold text-slate-700">{{ mascota.peso || '-- kg' }}</p>
+                  </div>
+                </div>
+                <button class="w-full py-2.5 text-blue-600 font-bold rounded-xl hover:bg-blue-50 border border-blue-100 transition-colors">Historial</button>
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-4 mt-2 border-t border-slate-100 pt-4">
-              <div>
-                <p class="text-xs text-slate-500">Próxima vacuna</p>
-                <p class="text-sm font-semibold text-slate-700">15 Oct 2023</p>
-              </div>
-              <div>
-                <p class="text-xs text-slate-500">Peso</p>
-                <p class="text-sm font-semibold text-slate-700">4.5 kg</p>
-              </div>
-            </div>
-            <button class="mt-2 w-full py-2.5 bg-slate-50 text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-colors border border-blue-100">Ver Historial Médico</button>
-          </div>
-
-          <!-- Card Mascota 2 -->
-          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 hover:shadow-md transition-shadow flex flex-col gap-4">
-            <div class="flex items-center gap-4">
-              <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-3xl">🐶</div>
-              <div>
-                <h3 class="text-xl font-bold text-slate-800">Firulais</h3>
-                <p class="text-sm text-slate-500">Perro • Labrador • 5 años</p>
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4 mt-2 border-t border-slate-100 pt-4">
-              <div>
-                <p class="text-xs text-slate-500">Próxima vacuna</p>
-                <p class="text-sm font-semibold text-slate-700">10 Nov 2023</p>
-              </div>
-              <div>
-                <p class="text-xs text-slate-500">Peso</p>
-                <p class="text-sm font-semibold text-slate-700">22.0 kg</p>
-              </div>
-            </div>
-            <button class="mt-2 w-full py-2.5 bg-slate-50 text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-colors border border-blue-100">Ver Historial Médico</button>
-          </div>
+          }
         </div>
       </section>
 
       <!-- Próximas Citas Section -->
       <section>
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-lg font-bold text-slate-800">Mis Próximas Citas</h2>
-          <button class="text-sm text-blue-600 font-medium hover:text-blue-800 transition-colors">Agendar nueva</button>
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-extrabold text-slate-800">Próximas Citas</h2>
         </div>
         
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="p-6 flex justify-between items-center bg-white hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
-            <div class="flex items-center gap-4">
-              <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-xl">📅</div>
-              <div>
-                <h4 class="font-bold text-slate-800">Vacunación - Michi</h4>
-                <p class="text-sm text-slate-500">Mañana, 10:00 AM</p>
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden p-2">
+          @for (cita of citas; track cita.id) {
+            <div class="p-4 flex flex-col md:flex-row md:items-center justify-between bg-white hover:bg-slate-50 transition-colors rounded-2xl gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-yellow-50 border border-yellow-100 flex flex-col items-center justify-center text-yellow-700">
+                  <span class="text-[10px] font-bold uppercase">Día</span>
+                  <span class="text-lg font-black leading-none">{{ cita.diaNumero }}</span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">{{ cita.estado }}</span>
+                    <span class="text-xs font-bold text-slate-400">{{ cita.hora }}</span>
+                  </div>
+                  <h4 class="font-bold text-slate-800 text-lg">{{ cita.motivo }} - {{ cita.mascota }}</h4>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button (click)="cancelarCita(cita.id)" class="px-4 py-2 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-colors">Cancelar</button>
+                <button (click)="abrirModalCita(cita)" class="px-4 py-2 text-sm font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors">Cambiar</button>
               </div>
             </div>
-            <div>
-              <span class="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">Pendiente</span>
-            </div>
-          </div>
+          } @empty {
+            <div class="p-6 text-center text-slate-500 font-medium">No tienes citas programadas.</div>
+          }
         </div>
       </section>
 
     </div>
   </main>
+
+  <!-- Modal de Nueva Mascota -->
+  @if (mostrarModalMascota) {
+    <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
+        <h2 class="text-2xl font-extrabold text-slate-800 mb-6 flex items-center gap-2"><span>🐾</span> Añadir Mascota</h2>
+        
+        <form (ngSubmit)="guardarMascota()" class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Nombre</label>
+            <input type="text" [(ngModel)]="nuevaMascota.nombre" name="nombre" required class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Especie</label>
+              <select [(ngModel)]="nuevaMascota.especie" name="especie" class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-white">
+                <option value="Perro">Perro</option>
+                <option value="Gato">Gato</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Raza</label>
+              <input type="text" [(ngModel)]="nuevaMascota.raza" name="raza" class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Edad (años)</label>
+              <input type="number" [(ngModel)]="nuevaMascota.edad" name="edad" class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Peso</label>
+              <input type="text" [(ngModel)]="nuevaMascota.peso" name="peso" placeholder="Ej. 4.5 kg" class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            </div>
+          </div>
+          
+          <div class="flex justify-end gap-3 mt-8">
+            <button type="button" (click)="cerrarModalMascota()" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">Cancelar</button>
+            <button type="submit" class="px-5 py-2.5 rounded-xl font-bold text-white bg-blue-500 hover:bg-blue-600 transition-colors shadow-sm">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- Modal de Nueva Cita -->
+  @if (mostrarModalCita) {
+    <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
+        <h2 class="text-2xl font-extrabold text-slate-800 mb-6 flex items-center gap-2"><span>📅</span> {{ modoEdicionCita ? 'Editar Cita' : 'Agendar Cita' }}</h2>
+        
+        <form (ngSubmit)="guardarCita()" class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Mascota</label>
+            <select [(ngModel)]="nuevaCita.mascota" name="mascota" required class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-white">
+              @for (mascota of mascotas; track mascota.id) {
+                <option [value]="mascota.nombre">{{ mascota.nombre }}</option>
+              }
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Fecha</label>
+              <input type="date" [(ngModel)]="nuevaCita.fecha" name="fecha" required class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Hora</label>
+              <input type="time" [(ngModel)]="nuevaCita.hora" name="hora" required class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Motivo</label>
+            <input type="text" [(ngModel)]="nuevaCita.motivo" name="motivo" placeholder="Ej. Vacunación, Revisión..." required class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          </div>
+          
+          <div class="flex justify-end gap-3 mt-8">
+            <button type="button" (click)="cerrarModalCita()" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">Cancelar</button>
+            <button type="submit" class="px-5 py-2.5 rounded-xl font-bold text-white bg-blue-500 hover:bg-blue-600 transition-colors shadow-sm">{{ modoEdicionCita ? 'Actualizar' : 'Agendar' }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
 </div>

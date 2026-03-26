@@ -1,0 +1,30 @@
+<aside class="w-64 h-full bg-slate-900 text-slate-300 flex flex-col transition-all duration-300 z-10 shrink-0 shadow-xl">
+  <!-- Logo -->
+  <div class="h-16 flex items-center px-6 bg-slate-950 text-white font-bold text-xl tracking-wide border-b border-slate-800">
+    <span class="text-blue-500 mr-2 text-2xl">🐾</span> VetCare
+  </div>
+
+  <!-- Menú de Navegación -->
+  <nav class="flex-1 py-6 px-4 space-y-2 overflow-y-auto">
+    <a routerLink="/dashboard-user" routerLinkActive="bg-blue-600 text-white" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white transition-all font-medium">
+      <span class="text-xl">📊</span>
+      <span>Mi Panel</span>
+    </a>
+    <a routerLink="/mis-mascotas" routerLinkActive="bg-blue-600 text-white" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white transition-all font-medium">
+      <span class="text-xl">🐕</span>
+      <span>Mis Mascotas</span>
+    </a>
+    <a routerLink="/mis-citas" routerLinkActive="bg-blue-600 text-white" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white transition-all font-medium">
+      <span class="text-xl">📅</span>
+      <span>Mis Citas</span>
+    </a>
+  </nav>
+
+  <!-- Footer del Sidebar -->
+  <div class="p-4 border-t border-slate-800">
+    <button class="flex items-center gap-3 px-4 py-3 w-full rounded-xl hover:bg-red-500/10 hover:text-red-500 transition-colors text-slate-400 font-medium" routerLink="/login">
+      <img src="icons/logout.svg" class="w-6 h-6 bg-sky-100 rounded-2xl ">
+      Cerrar Sesión
+    </button>
+  </div>
+</aside>
