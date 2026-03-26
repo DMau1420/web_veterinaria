@@ -1,15 +1,15 @@
 import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import Chart from 'chart.js/auto';
-import { SidebarAdmin } from "../../components/sidebar-admin/sidebar-admin";
+import { SidebarAdmin } from "../../../components/sidebar-admin/sidebar-admin";
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-dashboard-admin',
   imports: [RouterModule, SidebarAdmin],
-  templateUrl: './dashboard.html',
-  styleUrl: './dashboard.css',
+  templateUrl: './dashboard-admin.html',
+  styleUrl: './dashboard-admin.css',
 })
-export class Dashboard implements AfterViewInit {
+export class DashboardAdmin implements AfterViewInit {
   @ViewChild('pacientesChart') pacientesChart!: ElementRef;
   @ViewChild('citasChart') citasChart!: ElementRef;
   @ViewChild('clientesChart') clientesChart!: ElementRef;

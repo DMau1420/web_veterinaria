@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { SidebarAdmin } from '../../components/sidebar-admin/sidebar-admin';
+import { SidebarAdmin } from '../../../components/sidebar-admin/sidebar-admin';
+
 
 @Component({
-  selector: 'app-citas',
+  selector: 'app-citas-admin',
   imports: [RouterModule, SidebarAdmin, FormsModule],
-  templateUrl: './citas.html'
+  templateUrl: './citas-admin.html'
 })
-export class Citas implements OnInit {
+export class CitasAdmin implements OnInit {
   fechaActual = new Date();
   mesActual = this.fechaActual.getMonth();
   anioActual = this.fechaActual.getFullYear();

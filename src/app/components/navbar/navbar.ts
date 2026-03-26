@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class NavbarComponent {
+export class Navbar {
   constructor(private router: Router){}
     onLogin() {
     this.router.navigate(['/login']);  

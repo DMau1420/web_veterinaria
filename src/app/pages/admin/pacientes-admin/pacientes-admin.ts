@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { SidebarAdmin } from '../../components/sidebar-admin/sidebar-admin';
+import { SidebarAdmin } from '../../../components/sidebar-admin/sidebar-admin';
 
 @Component({
-  selector: 'app-pacientes',
-  imports: [RouterModule, SidebarAdmin, FormsModule],
-  templateUrl: './pacientes.html'
+  selector: 'app-pacientes-admin',
+  imports: [RouterModule, FormsModule, SidebarAdmin],
+  templateUrl: './pacientes-admin.html'
 })
-export class Pacientes {
+export class PacientesAdmin {
   // Datos arbitrarios de prueba
   listaPacientes = [
     { id: 1, nombre: 'Michi', especie: 'Gato', raza: 'Persa', dueno: 'Carlos Pérez', telefono: '555-0123', estado: 'Activo' },

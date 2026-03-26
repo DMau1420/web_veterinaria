@@ -1,19 +1,20 @@
 import { Routes } from '@angular/router';
-import { LandingComponent } from './pages/landing/landing';
-import { Login } from './pages/auth/login/login';
-import { Register } from './pages/auth/register/register';
-import { Dashboard } from './pages/dashboard/dashboard';
-import { DashboardUser } from './pages/dashboard-user/dashboard-user';
-import { Pacientes } from './pages/pacientes/pacientes';
-import { Citas } from './pages/citas/citas';
+import { Login } from './pages/general/auth/login/login';
+import { Register } from './pages/general/auth/register/register';
+import { DashboardAdmin } from './pages/admin/dashboard-admin/dashboard-admin';
+import { DashboardUser } from './pages/user/dashboard-user/dashboard-user';
+import { PacientesAdmin } from './pages/admin/pacientes-admin/pacientes-admin';
+import { LandingComponent } from './pages/general/landing/landing';
+import { CitasAdmin } from './pages/admin/citas-admin/citas-admin';
+
 
 
 export const routes: Routes = [
     {path: '', component: LandingComponent},
     {path: 'login', component: Login},
     {path: 'register', component: Register},
-    {path: 'dashboard', component: Dashboard},
+    {path: 'dashboard', component: DashboardAdmin},
     {path: 'dashboard-user', component: DashboardUser},
-    {path: 'pacientes', component: Pacientes},
-    {path: 'citas', component: Citas}
+    {path: 'pacientes', component: PacientesAdmin},
+    {path: 'citas', component: CitasAdmin}
 ];

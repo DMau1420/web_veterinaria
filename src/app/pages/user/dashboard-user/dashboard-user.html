@@ -1,0 +1,114 @@
+<div class="flex h-screen bg-slate-50 font-sans">
+  
+  <!-- Sidebar del Usuario (asumiendo que crearás o tienes un app-sidebar-user) -->
+  <!-- Si aún usas el de admin temporalmente, puedes cambiarlo por <app-sidebar-admin></app-sidebar-admin> -->
+  <!-- <app-sidebar-user></app-sidebar-user>  -->
+
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col overflow-hidden">
+    
+    <!-- Header -->
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-0 shrink-0">
+      <h1 class="text-2xl font-bold text-slate-800">Mi Panel</h1>
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3 border-l border-slate-200 pl-4">
+          <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold">
+            C
+          </div>
+          <div class="hidden md:block text-sm">
+            <p class="font-bold text-slate-700">Mau</p>
+            <p class="text-slate-500 text-xs">Cliente</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8">
+      
+      <!-- Welcome Section -->
+      <div>
+        <h2 class="text-xl font-bold text-slate-800">¡Hola, Mau! 👋</h2>
+        <p class="text-slate-500">Aquí tienes el resumen de tus mascotas y tus próximas citas.</p>
+      </div>
+
+      <!-- Mascotas Cards Section -->
+      <section>
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-bold text-slate-800">Mis Mascotas</h2>
+          <button class="text-sm text-blue-600 font-medium hover:text-blue-800 transition-colors">+ Añadir Mascota</button>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Card Mascota 1 -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 hover:shadow-md transition-shadow flex flex-col gap-4">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center text-3xl">🐱</div>
+              <div>
+                <h3 class="text-xl font-bold text-slate-800">Michi</h3>
+                <p class="text-sm text-slate-500">Gato • Mestizo • 3 años</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-2 border-t border-slate-100 pt-4">
+              <div>
+                <p class="text-xs text-slate-500">Próxima vacuna</p>
+                <p class="text-sm font-semibold text-slate-700">15 Oct 2023</p>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500">Peso</p>
+                <p class="text-sm font-semibold text-slate-700">4.5 kg</p>
+              </div>
+            </div>
+            <button class="mt-2 w-full py-2.5 bg-slate-50 text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-colors border border-blue-100">Ver Historial Médico</button>
+          </div>
+
+          <!-- Card Mascota 2 -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 hover:shadow-md transition-shadow flex flex-col gap-4">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-3xl">🐶</div>
+              <div>
+                <h3 class="text-xl font-bold text-slate-800">Firulais</h3>
+                <p class="text-sm text-slate-500">Perro • Labrador • 5 años</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-2 border-t border-slate-100 pt-4">
+              <div>
+                <p class="text-xs text-slate-500">Próxima vacuna</p>
+                <p class="text-sm font-semibold text-slate-700">10 Nov 2023</p>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500">Peso</p>
+                <p class="text-sm font-semibold text-slate-700">22.0 kg</p>
+              </div>
+            </div>
+            <button class="mt-2 w-full py-2.5 bg-slate-50 text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-colors border border-blue-100">Ver Historial Médico</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Próximas Citas Section -->
+      <section>
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-bold text-slate-800">Mis Próximas Citas</h2>
+          <button class="text-sm text-blue-600 font-medium hover:text-blue-800 transition-colors">Agendar nueva</button>
+        </div>
+        
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-6 flex justify-between items-center bg-white hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-xl">📅</div>
+              <div>
+                <h4 class="font-bold text-slate-800">Vacunación - Michi</h4>
+                <p class="text-sm text-slate-500">Mañana, 10:00 AM</p>
+              </div>
+            </div>
+            <div>
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">Pendiente</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
