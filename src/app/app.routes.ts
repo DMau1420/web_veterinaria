@@ -17,4 +17,5 @@ export const routes: Routes = [
     {path: 'pacientes', component: PacientesAdmin},
     {path: 'citas', component: CitasAdmin},
     {path: 'dashboard-user', component: DashboardUser},
+    //nose
 ];
