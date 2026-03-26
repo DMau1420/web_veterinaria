@@ -18,7 +18,9 @@ export class Login {
   onLogin() {
     if (this.email === 'admin' && this.password === '1234') {
       this.router.navigate(['/dashboard']);  
-    } else {
+    } else if(this.email === 'mau' || this.password === '1234'){
+      this.router.navigate(['/dashboard-user']);  
+    }else {
       this.errorMessage = 'Credenciales incorrectas. Intenta de nuevo';
       this.email = '';
       this.password = '';
