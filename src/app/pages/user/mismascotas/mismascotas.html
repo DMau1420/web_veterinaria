@@ -1,0 +1,110 @@
+<div class="flex h-screen bg-slate-50 font-sans">
+
+  <app-sidebar-user></app-sidebar-user>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col overflow-hidden">
+
+    <!-- Header -->
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-0 shrink-0">
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">Mis Mascotas</h1>
+    </header>
+
+    <!-- Page Content -->
+    <div class="flex-1 flex overflow-hidden">
+      <!-- Grid de Mascotas -->
+      <div class="flex-1 overflow-y-auto p-4 md:p-8">
+        <section>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @for (mascota of mascotas; track mascota.id) {
+              <div (click)="seleccionarMascota(mascota)" class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group cursor-pointer">
+                <div class="h-24 {{ mascota.colorBg }} flex items-center justify-center relative">
+                  <div class="absolute -bottom-8 w-20 h-20 rounded-2xl bg-white border-4 border-white shadow-sm flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">{{ mascota.icono }}</div>
+                </div>
+                <div class="pt-10 pb-6 px-6 flex flex-col items-center text-center">
+                  <h3 class="text-2xl font-bold text-slate-800">{{ mascota.nombre }}</h3>
+                  <p class="text-sm text-slate-500 font-medium mb-4">{{ mascota.especie }} • {{ mascota.raza }} • {{ mascota.edad }} años</p>
+                  <div class="w-full grid grid-cols-2 gap-2 bg-slate-50 rounded-xl p-3 mb-4">
+                    <div class="text-left">
+                      <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Próx. Vacuna</p>
+                      <p class="text-sm font-semibold text-slate-700">{{ mascota.proximaVacuna || 'N/A' }}</p>
+                    </div>
+                    <div class="text-left border-l border-slate-200 pl-3">
+                      <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Peso</p>
+                      <p class="text-sm font-semibold text-slate-700">{{ mascota.peso || '-- kg' }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      </div>
+
+      <!-- Panel de Detalles de Mascota -->
+      @if (mascotaSeleccionada) {
+        <aside class="w-full md:w-96 bg-white border-l border-slate-200 flex flex-col shrink-0">
+          <div class="h-16 flex items-center justify-between px-6 border-b border-slate-200">
+            <h2 class="text-lg font-bold text-slate-800">Detalles de la Mascota</h2>
+            <button (click)="cerrarDetalles()" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-500">
+              &times;
+            </button>
+          </div>
+          <div class="flex-1 overflow-y-auto p-6 space-y-6">
+            <!-- Info General -->
+            <div class="flex flex-col items-center text-center">
+              <div class="w-24 h-24 rounded-2xl {{ mascotaSeleccionada.colorBg }} flex items-center justify-center text-5xl mb-4">
+                {{ mascotaSeleccionada.icono }}
+              </div>
+              <h3 class="text-3xl font-bold text-slate-800">{{ mascotaSeleccionada.nombre }}</h3>
+              <p class="text-base text-slate-500 font-medium">{{ mascotaSeleccionada.especie }} • {{ mascotaSeleccionada.raza }}</p>
+            </div>
+
+            <!-- Datos Específicos -->
+            <div class="bg-slate-50 rounded-2xl p-4 space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-semibold text-slate-600">Edad</span>
+                <span class="text-sm font-bold text-slate-800">{{ mascotaSeleccionada.edad }} años</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-semibold text-slate-600">Peso</span>
+                <span class="text-sm font-bold text-slate-800">{{ mascotaSeleccionada.peso }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-semibold text-slate-600">Próxima Vacuna</span>
+                <span class="text-sm font-bold text-slate-800">{{ mascotaSeleccionada.proximaVacuna || 'Sin registro' }}</span>
+              </div>
+            </div>
+
+            <!-- Historial de Citas -->
+            <div>
+              <h4 class="text-lg font-bold text-slate-800 mb-4">Últimas Citas</h4>
+              <div class="space-y-3">
+                @for (cita of citasDeLaMascota; track cita.id) {
+                  <div class="bg-white border border-slate-200 rounded-xl p-4">
+                    <div class="flex justify-between items-start">
+                      <div>
+                        <p class="font-bold text-slate-800">{{ cita.motivo }}</p>
+                        <p class="text-xs text-slate-500">{{ cita.fecha }} - {{ cita.hora }}</p>
+                      </div>
+                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold 
+                        {{ cita.estado === 'Completada' ? 'bg-green-100 text-green-700' : 
+                           (cita.estado === 'Cancelada' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700') }}">
+                        {{ cita.estado }}
+                      </span>
+                    </div>
+                  </div>
+                } @empty {
+                  <div class="text-center py-6 bg-slate-50 rounded-xl">
+                    <p class="text-sm text-slate-500">No hay historial de citas para esta mascota.</p>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </aside>
+      }
+    </div>
+  </main>
+</div>
+
