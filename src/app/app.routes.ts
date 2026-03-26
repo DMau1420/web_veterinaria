@@ -14,7 +14,7 @@ export const routes: Routes = [
     {path: 'login', component: Login},
     {path: 'register', component: Register},
     {path: 'dashboard', component: DashboardAdmin},
-    {path: 'dashboard-user', component: DashboardUser},
     {path: 'pacientes', component: PacientesAdmin},
-    {path: 'citas', component: CitasAdmin}
+    {path: 'citas', component: CitasAdmin},
+    {path: 'dashboard-user', component: DashboardUser},
 ];
