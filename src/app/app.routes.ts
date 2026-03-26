@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { LandingComponent } from './features/landing/landing';
-import { Login } from './features/auth/login/login';
-import { Register } from './features/auth/register/register';
-import { Dashboard } from './features/dashboard/dashboard';
-import { DashboardUser } from './features/dashboard-user/dashboard-user';
+import { LandingComponent } from './pages/landing/landing';
+import { Login } from './pages/auth/login/login';
+import { Register } from './pages/auth/register/register';
+import { Dashboard } from './pages/dashboard/dashboard';
+import { DashboardUser } from './pages/dashboard-user/dashboard-user';
 
 
 export const routes: Routes = [
