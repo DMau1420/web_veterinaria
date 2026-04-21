@@ -6,8 +6,8 @@ import { DashboardUser } from './pages/user/dashboard-user/dashboard-user';
 import { PacientesAdmin } from './pages/admin/pacientes-admin/pacientes-admin';
 import { LandingComponent } from './pages/general/landing/landing';
 import { CitasAdmin } from './pages/admin/citas-admin/citas-admin';
-import { Miscitas } from './pages/user/miscitas/miscitas';
 import { Mismascotas } from './pages/user/mismascotas/mismascotas';
+import { MisCitas } from './pages/user/miscitas/miscitas';
 
 
 
@@ -20,5 +20,5 @@ export const routes: Routes = [
     {path: 'citas', component: CitasAdmin},
     {path: 'dashboard-user', component: DashboardUser},
     {path: 'mismascotas', component: Mismascotas},
-    {path: 'miscitas', component: Miscitas}
+    {path: 'miscitas', component: MisCitas}
 ];
