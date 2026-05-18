@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/DMau1420/web_veterinaria#readme",
   "dependencies": {
+    "@abacritt/angularx-social-login": "^2.6.0",
     "@angular/common": "^21.2.5",
     "@angular/compiler": "^21.2.5",
     "@angular/core": "^21.2.5",

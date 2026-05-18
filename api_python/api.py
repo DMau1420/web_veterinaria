@@ -22,6 +22,10 @@ class UsuarioBase(BaseModel):
     telefono: Optional[str] = None
     rol: str = "USER"
 
+class UsuarioLogin(BaseModel):
+    email: str
+    password: str
+
 class CitaBase(BaseModel):
     mascota_id: int
     usuario_id: int
@@ -29,6 +33,39 @@ class CitaBase(BaseModel):
     hora: str
     motivo: str
     estado: str = "Pendiente"
+
+
+# ==========================================
+# LOGIN
+# ==========================================
+@app.post("/login")
+def login(usuario_login: UsuarioLogin):
+    conn = config.get_connection()
+    try:
+        with conn.cursor() as cursor:
+            # Buscar usuario por email
+            sql = "SELECT id, nombre, apellidos, email, password, rol FROM usuarios WHERE email = %s"
+            cursor.execute(sql, (usuario_login.email,))
+            usuario_en_db = cursor.fetchone()
+
+            if not usuario_en_db:
+                raise HTTPException(status_code=401, detail="Email o contraseña incorrectos")
+
+            # Verificar la contraseña
+            password_valida = bcrypt.checkpw(
+                usuario_login.password.encode('utf-8'),
+                usuario_en_db['password'].encode('utf-8')
+            )
+
+            if not password_valida:
+                raise HTTPException(status_code=401, detail="Email o contraseña incorrectos")
+            
+            # Excluir la contraseña del objeto de respuesta para no enviarla al cliente
+            del usuario_en_db['password']
+            
+            return {"mensaje": "Login exitoso", "usuario": usuario_en_db}
+    finally:
+        if conn: conn.close()
 
 
 # ==========================================
