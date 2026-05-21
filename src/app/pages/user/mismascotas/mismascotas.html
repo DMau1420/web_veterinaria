@@ -8,6 +8,9 @@
     <!-- Header -->
     <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-0 shrink-0">
       <h1 class="text-xl md:text-2xl font-bold text-slate-800">Mis Mascotas</h1>
+      <button (click)="abrirModalMascota()" class="text-sm px-4 py-2 bg-slate-100 text-blue-600 font-bold rounded-xl hover:bg-slate-200 transition-colors flex items-center gap-2">
+        <span>+</span> Añadir Mascota
+      </button>
     </header>
 
     <!-- Page Content -->
@@ -19,7 +22,13 @@
             @for (mascota of mascotas; track mascota.id) {
               <div (click)="seleccionarMascota(mascota)" class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group cursor-pointer">
                 <div class="h-24 {{ mascota.colorBg }} flex items-center justify-center relative">
-                  <div class="absolute -bottom-8 w-20 h-20 rounded-2xl bg-white border-4 border-white shadow-sm flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">{{ mascota.icono }}</div>
+                  <div class="absolute -bottom-8 w-20 h-20 rounded-2xl bg-white border-4 border-white shadow-sm flex items-center justify-center text-4xl group-hover:scale-110 transition-transform overflow-hidden">
+                    @if (mascota.imagenUrl) {
+                      <img [src]="mascota.imagenUrl" alt="{{ mascota.nombre }}" class="w-full h-full object-cover">
+                    } @else {
+                      {{ mascota.icono }}
+                    }
+                  </div>
                 </div>
                 <div class="pt-10 pb-6 px-6 flex flex-col items-center text-center">
                   <h3 class="text-2xl font-bold text-slate-800">{{ mascota.nombre }}</h3>
@@ -53,8 +62,12 @@
           <div class="flex-1 overflow-y-auto p-6 space-y-6">
             <!-- Info General -->
             <div class="flex flex-col items-center text-center">
-              <div class="w-24 h-24 rounded-2xl {{ mascotaSeleccionada.colorBg }} flex items-center justify-center text-5xl mb-4">
-                {{ mascotaSeleccionada.icono }}
+              <div class="w-24 h-24 rounded-2xl {{ mascotaSeleccionada.colorBg }} flex items-center justify-center text-5xl mb-4 overflow-hidden shadow-sm border-2 border-white">
+                @if (mascotaSeleccionada.imagenUrl) {
+                  <img [src]="mascotaSeleccionada.imagenUrl" alt="{{ mascotaSeleccionada.nombre }}" class="w-full h-full object-cover">
+                } @else {
+                  {{ mascotaSeleccionada.icono }}
+                }
               </div>
               <h3 class="text-3xl font-bold text-slate-800">{{ mascotaSeleccionada.nombre }}</h3>
               <p class="text-base text-slate-500 font-medium">{{ mascotaSeleccionada.especie }} • {{ mascotaSeleccionada.raza }}</p>
@@ -106,5 +119,66 @@
       }
     </div>
   </main>
-</div>
 
+  <!-- Modal de Nueva Mascota -->
+  @if (mostrarModalMascota) {
+    <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
+        <h2 class="text-2xl font-extrabold text-slate-800 mb-6 flex items-center gap-2"><span>🐾</span> {{ modoEdicionMascota ? 'Editar Mascota' : 'Añadir Mascota' }}</h2>
+        
+        <form (ngSubmit)="guardarMascota()" class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Nombre</label>
+            <input type="text" [(ngModel)]="nuevaMascota.nombre" name="nombre" required class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Especie</label>
+              <select [(ngModel)]="nuevaMascota.especie" name="especie" class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-white">
+                <option value="Perro">Perro</option>
+                <option value="Gato">Gato</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Raza</label>
+              <input type="text" [(ngModel)]="nuevaMascota.raza" name="raza" class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Edad (años)</label>
+              <input type="number" [(ngModel)]="nuevaMascota.edad" name="edad" class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Peso</label>
+              <input type="text" [(ngModel)]="nuevaMascota.peso" name="peso" placeholder="Ej. 4.5 kg" class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Próxima Vacuna</label>
+            <input type="date" [(ngModel)]="nuevaMascota.proximaVacuna" name="proximaVacuna" class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          </div>
+
+          <div class="mt-4">
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Imagen (Opcional)</label>
+            <input type="file" (change)="onFileSelected($event)" accept="image/*" class="block w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-white text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+          </div>
+          
+          <div class="flex justify-between gap-3 mt-8">
+            <div>
+              @if (modoEdicionMascota) {
+                <button type="button" (click)="eliminarMascota()" class="px-5 py-2.5 rounded-xl font-bold text-red-600 bg-red-50 hover:bg-red-100 transition-colors">Eliminar</button>
+              }
+            </div>
+            <div class="flex gap-3">
+              <button type="button" (click)="cerrarModalMascota()" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">Cancelar</button>
+              <button type="submit" class="px-5 py-2.5 rounded-xl font-bold text-white bg-blue-500 hover:bg-blue-600 transition-colors shadow-sm">{{ modoEdicionMascota ? 'Actualizar' : 'Guardar' }}</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

@@ -102,9 +102,20 @@ export class DashboardUser implements OnInit {
             const pet = this.mascotas.find(m => m.id === c.mascota_id);
             const fechaObj = new Date(c.fecha + 'T00:00:00'); 
             const diaNumero = !isNaN(fechaObj.getDate()) ? fechaObj.getDate().toString() : '--';
+            
+            let horaStr = c.hora ? String(c.hora) : '--:--';
+            if (horaStr.includes(':')) {
+              horaStr = horaStr.split(':').slice(0, 2).join(':');
+            } else if (!isNaN(Number(horaStr))) {
+              const totalSeconds = Number(horaStr);
+              const hours = Math.floor(totalSeconds / 3600);
+              const minutes = Math.floor((totalSeconds % 3600) / 60);
+              horaStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            }
+
             return {
               id: c.id, mascota: pet ? pet.nombre : 'Desconocida', mascota_id: c.mascota_id, fecha: c.fecha,
-              hora: c.hora, motivo: c.motivo, estado: c.estado, diaNumero: diaNumero
+              hora: horaStr, motivo: c.motivo, estado: c.estado, diaNumero: diaNumero
             };
           });
           
@@ -170,6 +181,7 @@ export class DashboardUser implements OnInit {
     
     if (this.nuevaMascota.raza) formData.append('raza', this.nuevaMascota.raza);
     if (this.nuevaMascota.edad) formData.append('edad', this.nuevaMascota.edad.toString());
+    if (this.nuevaMascota.proximaVacuna) formData.append('proxima_vacuna', this.nuevaMascota.proximaVacuna);
     
     // Limpiamos el campo peso por si el usuario escribió "kg" (ej. "4.5 kg"). FastAPI espera un float.
     if (this.nuevaMascota.peso) {

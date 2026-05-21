@@ -159,6 +159,11 @@
           </div>
 
           <div class="mt-4">
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Próxima Vacuna</label>
+            <input type="date" [(ngModel)]="nuevaMascota.proximaVacuna" name="proximaVacuna" class="block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          </div>
+
+          <div class="mt-4">
             <label class="block text-sm font-semibold text-slate-700 mb-1">Imagen (Opcional)</label>
             <input type="file" (change)="onFileSelected($event)" accept="image/*" class="block w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-white text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
           </div>
