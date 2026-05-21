@@ -28,7 +28,14 @@
       <div class="bg-sky-300 from-blue-600 to-blue-400 rounded-3xl p-8 md:p-10 text-white shadow-lg shadow-blue-500/30 flex justify-between items-center relative overflow-hidden">
         <div class="relative z-10">
           <h2 class="text-3xl font-extrabold mb-2">¡Hola, {{ usuarioNombre.split(' ')[0] }}! 👋</h2>
-          <p class="text-blue-100 text-lg md:w-3/4">Tienes <span class="font-bold text-white">1 cita programada</span> para esta semana. No olvides revisar el historial de vacunación de tus mascotas.</p>
+          <p class="text-blue-100 text-lg md:w-3/4">
+            @if (citas.length > 0) {
+              Tienes <span class="font-bold text-white">{{ citas.length }} cita{{ citas.length === 1 ? '' : 's' }} programada{{ citas.length === 1 ? '' : 's' }}</span> en los próximos 7 días.
+            } @else {
+              No tienes citas programadas.
+            }
+            No olvides revisar el historial de vacunación de tus mascotas.
+          </p>
           <button (click)="abrirModalCita()" class="mt-6 px-6 py-2.5 bg-white text-blue-600 font-bold rounded-xl shadow-sm hover:bg-slate-50 transition-colors">
             Agendar nueva cita
           </button>

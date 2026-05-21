@@ -87,11 +87,16 @@ export class DashboardUser implements OnInit {
         const hoy = new Date();
         hoy.setHours(0, 0, 0, 0);
 
-        // Filtramos para mostrar únicamente las de este usuario y que sean futuras o del día actual
+        // Calcular límite de una semana (7 días a partir de hoy)
+        const limiteSemana = new Date(hoy);
+        limiteSemana.setDate(hoy.getDate() + 7);
+        limiteSemana.setHours(23, 59, 59, 999);
+
+        // Filtramos para mostrar únicamente las de este usuario, desde hoy hasta dentro de 7 días
         this.citas = citasData
           .filter((c: any) => {
             const fechaCita = new Date(c.fecha + 'T00:00:00');
-            return Number(c.usuario_id) === Number(this.usuarioActivoId) && fechaCita >= hoy;
+            return Number(c.usuario_id) === Number(this.usuarioActivoId) && fechaCita >= hoy && fechaCita <= limiteSemana;
           })
           .map((c: any) => {
             const pet = this.mascotas.find(m => m.id === c.mascota_id);
