@@ -23,6 +23,9 @@ export class MisCitas implements OnInit {
   misCitas: any[] = [];
   mascotas: any[] = [];
   usuarioActivoId: number | null = null;
+
+  usuarioNombre = 'Cargando...';
+  usuarioIniciales = 'U';
   
   mostrarModal = false;
   nuevaCita: any = { mascota_id: null, fecha: '', hora: '', motivo: '', estado: 'Pendiente' };
@@ -34,7 +37,10 @@ export class MisCitas implements OnInit {
   ngOnInit() {
     const usuarioStr = localStorage.getItem('usuario_activo');
     if (usuarioStr) {
-      this.usuarioActivoId = JSON.parse(usuarioStr).id;
+      const usuarioActivo = JSON.parse(usuarioStr);
+      this.usuarioActivoId = usuarioActivo.id;
+      this.usuarioNombre = `${usuarioActivo.nombre} ${usuarioActivo.apellidos || ''}`.trim();
+      this.usuarioIniciales = (usuarioActivo.nombre.charAt(0) + (usuarioActivo.apellidos ? usuarioActivo.apellidos.charAt(0) : '')).toUpperCase();
     }
     this.generarCalendario();
     this.cargarDatos();
