@@ -163,15 +163,30 @@ def crear_mascota(
     proxima_vacuna: Optional[str] = Form(None),
     imagen: Optional[UploadFile] = File(None)
 ):
-    imagen_path = None
-    if imagen:
-        imagen_path = f"{IMAGENES_DIR}/{imagen.filename}"
-        with open(imagen_path, "wb") as buffer:
-            shutil.copyfileobj(imagen.file, buffer)
-
     conn = config.get_connection()
     try:
+        imagen_path = None
         with conn.cursor() as cursor:
+            if imagen:
+                # Obtener info del usuario para crear la carpeta personalizada
+                cursor.execute("SELECT nombre, apellidos FROM usuarios WHERE id = %s", (usuario_id,))
+                user_info = cursor.fetchone()
+                if user_info:
+                    u_nombre = user_info['nombre'].replace(" ", "").lower()
+                    u_apellidos = user_info['apellidos'].replace(" ", "").lower() if user_info['apellidos'] else ""
+                    folder_name = f"{u_nombre}{u_apellidos[:3]}{usuario_id}"
+                else:
+                    folder_name = f"usuario_{usuario_id}"
+                
+                user_dir = os.path.join(IMAGENES_DIR, folder_name)
+                os.makedirs(user_dir, exist_ok=True)
+                
+                imagen_path = f"{IMAGENES_DIR}/{folder_name}/{imagen.filename}"
+                local_path = os.path.join(user_dir, imagen.filename)
+                
+                with open(local_path, "wb") as buffer:
+                    shutil.copyfileobj(imagen.file, buffer)
+
             sql = """INSERT INTO mascotas (usuario_id, nombre, especie, raza, edad, peso, proxima_vacuna, imagen)
                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
             cursor.execute(sql, (usuario_id, nombre, especie, raza, edad, peso, proxima_vacuna, imagen_path))
@@ -205,8 +220,22 @@ def actualizar_mascota(
             imagen_path = mascota['imagen']
             # Si se envía una imagen nueva, la sobreescribimos
             if imagen:
-                imagen_path = f"{IMAGENES_DIR}/{imagen.filename}"
-                with open(imagen_path, "wb") as buffer:
+                cursor.execute("SELECT nombre, apellidos FROM usuarios WHERE id = %s", (usuario_id,))
+                user_info = cursor.fetchone()
+                if user_info:
+                    u_nombre = user_info['nombre'].replace(" ", "").lower()
+                    u_apellidos = user_info['apellidos'].replace(" ", "").lower() if user_info['apellidos'] else ""
+                    folder_name = f"{u_nombre}{u_apellidos[:3]}{usuario_id}"
+                else:
+                    folder_name = f"usuario_{usuario_id}"
+                
+                user_dir = os.path.join(IMAGENES_DIR, folder_name)
+                os.makedirs(user_dir, exist_ok=True)
+                
+                imagen_path = f"{IMAGENES_DIR}/{folder_name}/{imagen.filename}"
+                local_path = os.path.join(user_dir, imagen.filename)
+                
+                with open(local_path, "wb") as buffer:
                     shutil.copyfileobj(imagen.file, buffer)
 
             sql = """UPDATE mascotas SET usuario_id=%s, nombre=%s, especie=%s, raza=%s, 
