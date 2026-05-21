@@ -3,15 +3,27 @@ import shutil
 from typing import Optional
 import config
 from fastapi import FastAPI, HTTPException, File, UploadFile, Form
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import bcrypt
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+# --- CONFIGURACIÓN DE CORS ---
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200", "http://127.0.0.1:4200"],  # Permite peticiones desde el frontend de Angular
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # --- CONFIGURACIÓN DE CARPETA PARA IMÁGENES ---
 IMAGENES_DIR = "imagenes-backend"
 os.makedirs(IMAGENES_DIR, exist_ok=True)
+app.mount("/imagenes-backend", StaticFiles(directory=IMAGENES_DIR), name="imagenes-backend")
 
 # --- MODELOS PYDANTIC (Para JSON requests) ---
 class UsuarioBase(BaseModel):
@@ -23,7 +35,7 @@ class UsuarioBase(BaseModel):
     rol: str = "USER"
 
 class UsuarioLogin(BaseModel):
-    email: str
+    identificador: str
     password: str
 
 class CitaBase(BaseModel):
@@ -43,9 +55,9 @@ def login(usuario_login: UsuarioLogin):
     conn = config.get_connection()
     try:
         with conn.cursor() as cursor:
-            # Buscar usuario por email
-            sql = "SELECT id, nombre, apellidos, email, password, rol FROM usuarios WHERE email = %s"
-            cursor.execute(sql, (usuario_login.email,))
+            # Buscar usuario por email o teléfono
+            sql = "SELECT id, nombre, apellidos, email, password, rol FROM usuarios WHERE email = %s OR telefono = %s"
+            cursor.execute(sql, (usuario_login.identificador, usuario_login.identificador))
             usuario_en_db = cursor.fetchone()
 
             if not usuario_en_db:
@@ -265,7 +277,18 @@ def actualizar_cita(id: int, cita: CitaBase):
     finally:
         if conn: conn.close()
 
-# app.delete("/citas/{id}")  (Sigue un patrón similar)
+@app.delete("/citas/{id}")
+def eliminar_cita(id: int):
+    conn = config.get_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM citas WHERE id = %s", (id,))
+            conn.commit()
+            if cursor.rowcount == 0:
+                raise HTTPException(status_code=404, detail="Cita no encontrada")
+            return {"mensaje": "Cita eliminada correctamente"}
+    finally:
+        if conn: conn.close()
 
 if __name__ == "__main__":
     uvicorn.run("api:app", host="127.0.0.1", port=8000, reload=True)

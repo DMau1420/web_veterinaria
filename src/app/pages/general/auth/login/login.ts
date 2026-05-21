@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { LoginService } from '../../../../services/login-service';
 
 @Component({
   selector: 'app-login',
@@ -9,21 +10,32 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './login.css',
 })
 export class Login {
-  email = '';
+  email = ''; // Esta variable ahora almacenará tanto correos como teléfonos
   password = '';
   errorMessage = '';
 
-  constructor(private router: Router){}
+  constructor(private router: Router, private loginService: LoginService){}
 
   onLogin() {
-    if (this.email === 'admin' && this.password === '1234') {
-      this.router.navigate(['/dashboard']);  
-    } else if(this.email === 'mau' || this.password === '1234'){
-      this.router.navigate(['/dashboard-user']);  
-    }else {
-      this.errorMessage = 'Credenciales incorrectas. Intenta de nuevo';
-      this.email = '';
-      this.password = '';
-    }
+    this.errorMessage = ''; // Limpiamos errores previos
+
+    this.loginService.login({ identificador: this.email, password: this.password }).subscribe({
+      next: (response: any) => {
+        // Guardamos los datos del usuario activo en localStorage
+        localStorage.setItem('usuario_activo', JSON.stringify(response.usuario));
+
+        const rol = response.usuario?.rol;
+        if (rol === 'ADMIN') {
+          this.router.navigate(['/dashboard']);  
+        } else {
+          this.router.navigate(['/dashboard-user']);  
+        }
+      },
+      error: (error: any) => {
+        console.error('Error al iniciar sesión:', error);
+        this.errorMessage = error.error?.detail || 'Credenciales incorrectas. Intenta de nuevo';
+        this.password = ''; // Limpiar solo la contraseña por seguridad
+      }
+    });
   }
 }
