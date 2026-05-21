@@ -44,4 +44,4 @@ __screenshots__/
 Thumbs.db
 
 #imagenes pesadas
-api_python/imagenes-backend
+api_python/imagenes-backend/*
