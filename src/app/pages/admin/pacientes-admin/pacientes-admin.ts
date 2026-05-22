@@ -1,39 +1,68 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { SidebarAdmin } from '../../../components/sidebar-admin/sidebar-admin';
+import { AdminServicce } from '../../../services/admin-servicce';
 
 @Component({
   selector: 'app-pacientes-admin',
-  imports: [RouterModule, FormsModule, SidebarAdmin],
+  imports: [RouterModule, FormsModule, SidebarAdmin, CommonModule],
   templateUrl: './pacientes-admin.html'
 })
-export class PacientesAdmin {
-  // Datos arbitrarios de prueba
-  listaPacientes = [
-    { id: 1, nombre: 'Michi', especie: 'Gato', raza: 'Persa', dueno: 'Carlos Pérez', telefono: '555-0123', estado: 'Activo' },
-    { id: 2, nombre: 'Firulais', especie: 'Perro', raza: 'Labrador', dueno: 'Ana Gómez', telefono: '555-0124', estado: 'Activo' },
-    { id: 3, nombre: 'Copo', especie: 'Conejo', raza: 'Angora', dueno: 'Luis Martínez', telefono: '555-0125', estado: 'Inactivo' },
-    { id: 4, nombre: 'Nemo', especie: 'Pez', raza: 'Payaso', dueno: 'Sofía Castro', telefono: '555-0126', estado: 'Activo' },
-    { id: 5, nombre: 'Luna', especie: 'Gato', raza: 'Siamés', dueno: 'Miguel Rojas', telefono: '555-0127', estado: 'Activo' },
-    { id: 6, nombre: 'Max', especie: 'Perro', raza: 'Bulldog', dueno: 'Andrea Loria', telefono: '555-0128', estado: 'Activo' }
-  ];
+export class PacientesAdmin implements OnInit {
+  listaPacientes: any[] = [];
+  listaUsuarios: any[] = [];
 
+  // Modal de Pacientes
   mostrarModal = false;
   modoEdicion = false;
   pacienteEnEdicionId: number | null = null;
-  nuevoPaciente = { nombre: '', especie: '', raza: '', dueno: '', telefono: '', estado: 'Activo' };
+  nuevoPaciente: any = { nombre: '', especie: '', raza: '', usuario_id: null };
 
+  // Modal de Dueños (Usuarios)
+  mostrarModalUsuario = false;
+  nuevoUsuario = { nombre: '', apellidos: '', email: '', telefono: '', password: '', rol: 'USER' };
+
+  constructor(private adminService: AdminServicce, private cdr: ChangeDetectorRef) {}
+
+  ngOnInit() {
+    this.cargarDatos();
+  }
+
+  cargarDatos() {
+    this.adminService.getUsuarios().subscribe(usuarios => {
+      this.listaUsuarios = usuarios.filter((u: any) => u.rol === 'USER');
+      this.adminService.getMascotas().subscribe(mascotas => {
+        this.listaPacientes = mascotas.map((m: any) => {
+          const dueno = usuarios.find((u: any) => u.id === m.usuario_id);
+          return {
+            ...m,
+            raza: m.raza || 'No especificada',
+            dueno: dueno ? `${dueno.nombre} ${dueno.apellidos || ''}`.trim() : 'Desconocido',
+            telefono: dueno?.telefono || 'Sin teléfono',
+            estado: 'Activo'
+          };
+        });
+        this.cdr.detectChanges();
+      });
+    });
+  }
+
+  // --- MODAL PACIENTES ---
   abrirModal(paciente?: any) {
     this.mostrarModal = true;
     if (paciente) {
       this.modoEdicion = true;
       this.pacienteEnEdicionId = paciente.id;
-      this.nuevoPaciente = { ...paciente };
+      this.nuevoPaciente = { 
+        nombre: paciente.nombre, especie: paciente.especie, raza: paciente.raza, 
+        usuario_id: paciente.usuario_id 
+      };
     } else {
       this.modoEdicion = false;
       this.pacienteEnEdicionId = null;
-      this.nuevoPaciente = { nombre: '', especie: '', raza: '', dueno: '', telefono: '', estado: 'Activo' };
+      this.nuevoPaciente = { nombre: '', especie: '', raza: '', usuario_id: null };
     }
   }
 
@@ -42,19 +71,57 @@ export class PacientesAdmin {
   }
 
   guardarPaciente() {
+    const formData = new FormData();
+    formData.append('nombre', this.nuevoPaciente.nombre);
+    formData.append('especie', this.nuevoPaciente.especie);
+    formData.append('raza', this.nuevoPaciente.raza);
+    formData.append('usuario_id', this.nuevoPaciente.usuario_id);
+
     if (this.modoEdicion && this.pacienteEnEdicionId !== null) {
-      const index = this.listaPacientes.findIndex(p => p.id === this.pacienteEnEdicionId);
-      if (index !== -1) {
-        this.listaPacientes[index] = { ...this.nuevoPaciente, id: this.pacienteEnEdicionId };
-      }
+      this.adminService.actualizarMascota(this.pacienteEnEdicionId, formData).subscribe({
+        next: () => {
+          this.cargarDatos();
+          this.cerrarModal();
+        },
+        error: (err) => console.error('Error al actualizar paciente', err)
+      });
     } else {
-      const nuevoId = this.listaPacientes.length > 0 ? Math.max(...this.listaPacientes.map(p => p.id)) + 1 : 1;
-      this.listaPacientes.push({ id: nuevoId, ...this.nuevoPaciente });
+      this.adminService.crearMascota(formData).subscribe({
+        next: () => {
+          this.cargarDatos();
+          this.cerrarModal();
+        },
+        error: (err) => console.error('Error al crear paciente', err)
+      });
     }
-    this.cerrarModal();
   }
 
   eliminarPaciente(id: number) {
-    this.listaPacientes = this.listaPacientes.filter(p => p.id !== id);
+    if (confirm('¿Estás seguro de eliminar este paciente? Esta acción no se puede deshacer.')) {
+      this.adminService.eliminarMascota(id).subscribe({
+        next: () => this.cargarDatos(),
+        error: (err) => console.error('Error al eliminar paciente', err)
+      });
+    }
+  }
+
+  // --- MODAL USUARIOS (DUEÑOS) ---
+  abrirModalUsuario() {
+    this.mostrarModalUsuario = true;
+    this.nuevoUsuario = { nombre: '', apellidos: '', email: '', telefono: '', password: '', rol: 'USER' };
+  }
+
+  cerrarModalUsuario() {
+    this.mostrarModalUsuario = false;
+  }
+
+  guardarUsuario() {
+    this.adminService.crearUsuario(this.nuevoUsuario).subscribe({
+      next: () => {
+        this.cargarDatos();
+        this.cerrarModalUsuario();
+      },
+      error: (err) => alert('Error al crear el dueño: ' + (err.error?.detail || 'Error desconocido'))
+    });
   }
 }

@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { SidebarAdmin } from '../../../components/sidebar-admin/sidebar-admin';
-
+import { AdminServicce } from '../../../services/admin-servicce';
 
 @Component({
   selector: 'app-citas-admin',
-  imports: [RouterModule, SidebarAdmin, FormsModule],
+  imports: [RouterModule, SidebarAdmin, FormsModule, CommonModule],
   templateUrl: './citas-admin.html'
 })
 export class CitasAdmin implements OnInit {
@@ -20,15 +21,20 @@ export class CitasAdmin implements OnInit {
   nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
   listaCitas: any[] = [];
+  usuarios: any[] = [];
+  mascotas: any[] = [];
+  mascotasFiltradas: any[] = [];
 
   mostrarModal = false;
-  nuevaCita = { paciente: '', dueno: '', fecha: '', hora: '', motivo: '', estado: 'Pendiente' };
+  nuevaCita: any = { paciente: '', dueno: '', fecha: '', hora: '', motivo: '', estado: 'Pendiente' };
   modoEdicion = false;
   citaEnEdicionId: number | null = null;
 
+  constructor(private adminService: AdminServicce, private cdr: ChangeDetectorRef) {}
+
   ngOnInit() {
     this.generarCalendario();
-    this.generarCitasDePrueba();
+    this.cargarDatos();
   }
 
   generarCalendario() {
@@ -42,20 +48,37 @@ export class CitasAdmin implements OnInit {
     this.diasDelMes = Array.from({length: diasEnElMes}, (_, i) => i + 1);
   }
 
-  // Generamos citas de prueba con fechas dinámicas relativas al mes actual
-  generarCitasDePrueba() {
-    const mesStr = (this.mesActual + 1).toString().padStart(2, '0');
-    const anio = this.anioActual;
-    const diaHoy = this.fechaActual.getDate().toString().padStart(2, '0');
-    const diaManana = (this.fechaActual.getDate() + 1).toString().padStart(2, '0');
-    
-    this.listaCitas = [
-      { id: 101, paciente: 'Michi', dueno: 'Carlos Pérez', fecha: `${anio}-${mesStr}-05`, hora: '10:00', motivo: 'Vacunación', estado: 'Pendiente' },
-      { id: 102, paciente: 'Firulais', dueno: 'Ana Gómez', fecha: `${anio}-${mesStr}-${diaHoy}`, hora: '11:30', motivo: 'Revisión general', estado: 'Confirmada' },
-      { id: 103, paciente: 'Copo', dueno: 'Luis Martínez', fecha: `${anio}-${mesStr}-${diaHoy}`, hora: '09:00', motivo: 'Corte de uñas', estado: 'Pendiente' },
-      { id: 104, paciente: 'Max', dueno: 'Andrea Loria', fecha: `${anio}-${mesStr}-${diaManana}`, hora: '14:00', motivo: 'Consulta por alergia', estado: 'Confirmada' },
-      { id: 105, paciente: 'Nemo', dueno: 'Sofía Castro', fecha: `${anio}-${mesStr}-25`, hora: '16:00', motivo: 'Revisión', estado: 'Cancelada' }
-    ];
+  cargarDatos() {
+    this.adminService.getMascotas().subscribe(mascotas => {
+      this.mascotas = mascotas; // Guardamos para el dropmenu
+
+      this.adminService.getUsuarios().subscribe(usuarios => {
+        this.usuarios = usuarios.filter((u: any) => u.rol === 'USER'); // Filtramos solo clientes
+
+        this.adminService.getCitas().subscribe(citas => {
+          this.listaCitas = citas.map((c: any) => {
+            const mascota = mascotas.find((m: any) => m.id === c.mascota_id);
+            const usuario = usuarios.find((u: any) => u.id === c.usuario_id);
+
+            let horaStr = c.hora ? String(c.hora) : '--:--';
+            if (horaStr.includes(':')) {
+              horaStr = horaStr.split(':').slice(0, 2).join(':');
+            } else if (!isNaN(Number(horaStr))) {
+              const totalSecs = Number(horaStr);
+              horaStr = `${Math.floor(totalSecs / 3600).toString().padStart(2, '0')}:${Math.floor((totalSecs % 3600) / 60).toString().padStart(2, '0')}`;
+            }
+
+            return {
+              ...c,
+              paciente: mascota ? mascota.nombre : 'Desconocida',
+              dueno: usuario ? `${usuario.nombre} ${usuario.apellidos || ''}`.trim() : 'Desconocido',
+              hora: horaStr
+            };
+          });
+          this.cdr.detectChanges();
+        });
+      });
+    });
   }
 
   abrirModal(cita?: any) {
@@ -70,8 +93,19 @@ export class CitasAdmin implements OnInit {
       // Pre-llenar la fecha con el día que actualmente está seleccionado
       const mesStr = (this.mesActual + 1).toString().padStart(2, '0');
       const diaStr = this.diaSeleccionado.toString().padStart(2, '0');
-      this.nuevaCita = { paciente: '', dueno: '', fecha: `${this.anioActual}-${mesStr}-${diaStr}`, hora: '', motivo: '', estado: 'Pendiente' };
+      this.nuevaCita = { usuario_id: null, mascota_id: null, fecha: `${this.anioActual}-${mesStr}-${diaStr}`, hora: '', motivo: '', estado: 'Pendiente' };
+      this.mascotasFiltradas = [];
     }
+  }
+
+  onUsuarioSeleccionado() {
+    if (this.nuevaCita.usuario_id) {
+      // Filtramos las mascotas para que solo aparezcan las que pertenezcan a este usuario
+      this.mascotasFiltradas = this.mascotas.filter(m => Number(m.usuario_id) === Number(this.nuevaCita.usuario_id));
+    } else {
+      this.mascotasFiltradas = [];
+    }
+    this.nuevaCita.mascota_id = null; // Reiniciar selección de mascota
   }
 
   cerrarModal() {
@@ -80,19 +114,50 @@ export class CitasAdmin implements OnInit {
 
   guardarCita() {
     if (this.modoEdicion && this.citaEnEdicionId !== null) {
-      const index = this.listaCitas.findIndex(c => c.id === this.citaEnEdicionId);
-      if (index !== -1) {
-        this.listaCitas[index] = { ...this.nuevaCita, id: this.citaEnEdicionId };
-      }
+      const payload = {
+        mascota_id: this.nuevaCita.mascota_id,
+        usuario_id: this.nuevaCita.usuario_id,
+        fecha: this.nuevaCita.fecha,
+        hora: this.nuevaCita.hora,
+        motivo: this.nuevaCita.motivo,
+        estado: this.nuevaCita.estado
+      };
+
+      this.adminService.actualizarCita(this.citaEnEdicionId, payload).subscribe({
+        next: () => {
+          this.cargarDatos();
+          this.cerrarModal();
+        },
+        error: (err: any) => console.error('Error al actualizar cita:', err)
+      });
     } else {
-      const nuevoId = this.listaCitas.length > 0 ? Math.max(...this.listaCitas.map(c => c.id)) + 1 : 101;
-      this.listaCitas.push({ id: nuevoId, ...this.nuevaCita });
+      // Lógica para registrar nueva cita
+      const payload = {
+        mascota_id: Number(this.nuevaCita.mascota_id),
+        usuario_id: Number(this.nuevaCita.usuario_id),
+        fecha: this.nuevaCita.fecha,
+        hora: this.nuevaCita.hora,
+        motivo: this.nuevaCita.motivo,
+        estado: 'Pendiente'
+      };
+
+      this.adminService.crearCita(payload).subscribe({
+        next: () => {
+          this.cargarDatos();
+          this.cerrarModal();
+        },
+        error: (err: any) => console.error('Error al agendar nueva cita:', err)
+      });
     }
-    this.cerrarModal();
   }
 
   cancelarCita(id: number) {
-    this.listaCitas = this.listaCitas.filter(c => c.id !== id);
+    if (confirm('¿Estás seguro de cancelar o eliminar esta cita?')) {
+      this.adminService.eliminarCita(id).subscribe({
+        next: () => this.cargarDatos(),
+        error: (err: any) => console.error('Error al eliminar cita:', err)
+      });
+    }
   }
 
   // --- Navegación del Calendario ---

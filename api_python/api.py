@@ -127,6 +127,41 @@ def eliminar_usuario(id: int):
 
 
 # ==========================================
+# MÉTRICAS
+# ==========================================
+@app.get("/contar_mascotas")
+def contar_mascotas():
+    conn = config.get_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT COUNT(*) as total FROM mascotas")
+            total = cursor.fetchone()['total']
+            
+            cursor.execute("SELECT COUNT(*) as mes_actual FROM mascotas WHERE MONTH(fecha_registro) = MONTH(CURRENT_DATE()) AND YEAR(fecha_registro) = YEAR(CURRENT_DATE())")
+            mes_actual = cursor.fetchone()['mes_actual']
+            
+            # Datos para gráfica de pacientes activos (meses del año actual)
+            cursor.execute("""
+                SELECT MONTH(fecha_registro) as mes, COUNT(*) as cantidad 
+                FROM mascotas 
+                WHERE YEAR(fecha_registro) = YEAR(CURRENT_DATE()) 
+                GROUP BY MONTH(fecha_registro)
+            """)
+            historico = cursor.fetchall()
+            historico_meses = [0] * 12
+            for row in historico:
+                historico_meses[row['mes'] - 1] = row['cantidad']
+                
+            # Datos para gráfica de especies
+            cursor.execute("SELECT especie, COUNT(*) as cantidad FROM mascotas GROUP BY especie")
+            especies = cursor.fetchall()
+            especies_dict = {row['especie']: row['cantidad'] for row in especies}
+            
+            return {"total": total, "mes_actual": mes_actual, "historico_meses": historico_meses, "especies": especies_dict}
+    finally:
+        if conn: conn.close()
+
+# ==========================================
 # CRUD: MASCOTAS (Incluye subida de imagen)
 # ==========================================
 @app.get("/mascotas")
