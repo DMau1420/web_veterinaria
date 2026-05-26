@@ -1,3 +1,4 @@
+import os
 import pymysql
 
 def get_connection():
@@ -6,10 +7,11 @@ def get_connection():
     """
     try:
         connection = pymysql.connect(
-            host='localhost',
-            user='mau',
-            password='mau1234',       
-            database='bd_vet',
+            # os.getenv busca la variable de Docker; si no existe, usa tu valor local
+            host=os.getenv('DB_HOST', 'localhost'),
+            user=os.getenv('DB_USER', 'mau'),
+            password=os.getenv('DB_PASSWORD', 'mau1234'),
+            database=os.getenv('DB_NAME', 'bd_vet'),
             cursorclass=pymysql.cursors.DictCursor
         )
         return connection

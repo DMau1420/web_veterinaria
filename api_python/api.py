@@ -71,10 +71,10 @@ def login(usuario_login: UsuarioLogin):
 
             if not password_valida:
                 raise HTTPException(status_code=401, detail="Email o contraseña incorrectos")
-            
+
             # Excluir la contraseña del objeto de respuesta para no enviarla al cliente
             del usuario_en_db['password']
-            
+
             return {"mensaje": "Login exitoso", "usuario": usuario_en_db}
     finally:
         if conn: conn.close()
@@ -100,7 +100,7 @@ def crear_usuario(usuario: UsuarioBase):
         # Encriptar la contraseña antes de guardarla
         salt = bcrypt.gensalt()
         password_encriptada = bcrypt.hashpw(usuario.password.encode('utf-8'), salt).decode('utf-8')
-        
+
         with conn.cursor() as cursor:
             sql = """INSERT INTO usuarios (nombre, apellidos, email, password, telefono, rol)
                      VALUES (%s, %s, %s, %s, %s, %s)"""
@@ -136,27 +136,27 @@ def contar_mascotas():
         with conn.cursor() as cursor:
             cursor.execute("SELECT COUNT(*) as total FROM mascotas")
             total = cursor.fetchone()['total']
-            
+
             cursor.execute("SELECT COUNT(*) as mes_actual FROM mascotas WHERE MONTH(fecha_registro) = MONTH(CURRENT_DATE()) AND YEAR(fecha_registro) = YEAR(CURRENT_DATE())")
             mes_actual = cursor.fetchone()['mes_actual']
-            
+
             # Datos para gráfica de pacientes activos (meses del año actual)
             cursor.execute("""
-                SELECT MONTH(fecha_registro) as mes, COUNT(*) as cantidad 
-                FROM mascotas 
-                WHERE YEAR(fecha_registro) = YEAR(CURRENT_DATE()) 
+                SELECT MONTH(fecha_registro) as mes, COUNT(*) as cantidad
+                FROM mascotas
+                WHERE YEAR(fecha_registro) = YEAR(CURRENT_DATE())
                 GROUP BY MONTH(fecha_registro)
             """)
             historico = cursor.fetchall()
             historico_meses = [0] * 12
             for row in historico:
                 historico_meses[row['mes'] - 1] = row['cantidad']
-                
+
             # Datos para gráfica de especies
             cursor.execute("SELECT especie, COUNT(*) as cantidad FROM mascotas GROUP BY especie")
             especies = cursor.fetchall()
             especies_dict = {row['especie']: row['cantidad'] for row in especies}
-            
+
             return {"total": total, "mes_actual": mes_actual, "historico_meses": historico_meses, "especies": especies_dict}
     finally:
         if conn: conn.close()
@@ -212,13 +212,13 @@ def crear_mascota(
                     folder_name = f"{u_nombre}{u_apellidos[:3]}{usuario_id}"
                 else:
                     folder_name = f"usuario_{usuario_id}"
-                
+
                 user_dir = os.path.join(IMAGENES_DIR, folder_name)
                 os.makedirs(user_dir, exist_ok=True)
-                
+
                 imagen_path = f"{IMAGENES_DIR}/{folder_name}/{imagen.filename}"
                 local_path = os.path.join(user_dir, imagen.filename)
-                
+
                 with open(local_path, "wb") as buffer:
                     shutil.copyfileobj(imagen.file, buffer)
 
@@ -263,17 +263,17 @@ def actualizar_mascota(
                     folder_name = f"{u_nombre}{u_apellidos[:3]}{usuario_id}"
                 else:
                     folder_name = f"usuario_{usuario_id}"
-                
+
                 user_dir = os.path.join(IMAGENES_DIR, folder_name)
                 os.makedirs(user_dir, exist_ok=True)
-                
+
                 imagen_path = f"{IMAGENES_DIR}/{folder_name}/{imagen.filename}"
                 local_path = os.path.join(user_dir, imagen.filename)
-                
+
                 with open(local_path, "wb") as buffer:
                     shutil.copyfileobj(imagen.file, buffer)
 
-            sql = """UPDATE mascotas SET usuario_id=%s, nombre=%s, especie=%s, raza=%s, 
+            sql = """UPDATE mascotas SET usuario_id=%s, nombre=%s, especie=%s, raza=%s,
                      edad=%s, peso=%s, proxima_vacuna=%s, imagen=%s WHERE id=%s"""
             cursor.execute(sql, (usuario_id, nombre, especie, raza, edad, peso, proxima_vacuna, imagen_path, id))
             conn.commit()
@@ -355,4 +355,4 @@ def eliminar_cita(id: int):
         if conn: conn.close()
 
 if __name__ == "__main__":
-    uvicorn.run("api:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=False)

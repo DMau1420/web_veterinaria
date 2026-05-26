@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # 1. El servicio de la Base de Datos (Usa la imagen oficial, no necesita Dockerfile)
+  db:
+    image: mariadb:12.2
+    container_name: mariadb_vet
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootmau1234
+      MYSQL_DATABASE: bd_vet
+      MYSQL_USER: vet_mau1234
+      MYSQL_PASSWORD: mau_1234_vet
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      # Aquí mapeamos tu carpeta local 'database' para que importe 'bd_vet.sql' automáticamente
+      - ./database:/docker-entrypoint-initdb.d
+
+  # 2. El servicio de tu API en Python
+  backend:
+    build: ./api_python
+    container_name: api_vet
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db  # Clave: Docker resolverá 'db' como la IP de MariaDB
+      - DB_USER=vet_mau1234
+      - DB_PASSWORD=mau_1234_vet
+      - DB_NAME=bd_vet
+    depends_on:
+      - db
+    volumes:
+      - ./api_python/imagenes-backend:/app/imagenes-backend
+
+  # 3. El servicio de tu Frontend en Angular
+  frontend:
+    build: ./frontend_angular
+    container_name: web_vet
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  mariadb_data:
