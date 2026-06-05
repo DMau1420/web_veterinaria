@@ -1,59 +1,68 @@
-# WebVeterinaria
+# 🐾 VetCare - Sistema de Gestión de Citas Veterinarias
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.2.
+VetCare es una plataforma web full-stack diseñada para optimizar la gestión de consultas, mascotas y control administrativo de una clínica veterinaria. Este proyecto implementa una arquitectura moderna basada en microservicios contenerizados y enrutamiento SPA avanzado Detrás de un servidor proxy Nginx.
 
-## Development server
+---
 
-To start a local development server, run:
+## 🚀 Características Clave
 
-```bash
-ng serve
-```
+* **Autenticación Híbrida:** Login flexible mediante correo electrónico o número telefónico con encriptación segura (`bcrypt`).
+* **Control de Roles:** Vistas y paneles completamente segregados para Administradores (`ADMIN`) y Usuarios finales (`USER`).
+* **Gestión de Mascotas y Citas:** CRUD completo con soporte para subida de imágenes de pacientes organizadas en directorios dinámicos en el servidor.
+* **Dashboard Estadístico:** Gráficas de monitoreo mensual e histórico de especies registradas mediante consultas optimizadas a la base de datos.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+## 🛠️ Stack Tecnológico
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+* **Frontend:** Angular 21 (TailwindCSS, TypeScript, FormsModule)
+* **Backend:** FastAPI (Python 3.14-slim, Uvicorn, Pydantic, PyMySQL, Bcrypt)
+* **Base de Datos:** MariaDB
+* **Proxy Web:** Nginx (Configuración personalizada con enrutamiento de fallback `try_files`)
+* **Orquestación:** Docker & Docker Compose
 
-```bash
-ng generate component component-name
-```
+---
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 🖼️ Capturas de Pantalla (Interfaz de Usuario)
 
-```bash
-ng generate --help
-```
+### 🔑 Autenticación y Acceso
+| Inicio de Sesión | Registro de Usuarios |
+| :---: | :---: |
+| ![Login](img_src/login.png) | ![Registro](img_src/register.png) |
 
-## Building
+### 🏠 Vista Principal
+![Landing Page](img_src/landing.png)
 
-To build the project run:
+### 🧑‍💻 Panel de Clientes (Módulos de Usuario)
+| Mi Dashboard | Mis Mascotas |
+| :---: | :---: |
+| ![Dashboard Usuario](img_src/dashboard-user.png) | ![Lista de Mascotas](img_src/pets.png) |
 
-```bash
-ng build
-```
+| Gestión de Citas | Registro de Mascotas (Modal) |
+| :---: | :---: |
+| ![Mis Citas](img_src/calendar.png) | ![Modal Mascotas](img_src/pets-modal.png) |
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### 👑 Panel de Control (Módulos de Administrador)
+| Métricas Generales | Calendario Global de Citas |
+| :---: | :---: |
+| ![Dashboard Admin](img_src/admin-dashboard.png) | ![Calendario Administrativo](img_src/admin-calendar.png) |
 
-## Running unit tests
+| Control de Pacientes | Modales de Acción |
+| :---: | :---: |
+| ![Control de Pacientes](img_src/all-pets.png) | ![Modal Citas Admin](img_src/cita-modal.png) |
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+---
 
-```bash
-ng test
-```
+## 📦 Despliegue en Producción (Docker)
 
-## Running end-to-end tests
+El proyecto está completamente contenerizado, aislando el Frontend, la API y la Base de Datos en una red interna y segura de Docker.
 
-For end-to-end (e2e) testing, run:
+### Requisitos Previos
+* Docker y Docker Compose instalados.
 
-```bash
-ng e2e
-```
+### Instrucciones de Lanzamiento
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+1. **Clonar el repositorio:**
+   ```bash
+   git clone [https://github.com/DMau1420/web_veterinaria.git](https://github.com/DMau1420/web_veterinaria.git)
+   cd web_veterinaria
