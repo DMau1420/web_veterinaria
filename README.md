@@ -66,8 +66,7 @@ El proyecto está completamente contenerizado, aislando el Frontend, la API y la
    ```bash
    git clone [https://github.com/DMau1420/web_veterinaria.git](https://github.com/DMau1420/web_veterinaria.git)
    cd web_veterinaria
-```
+
 2. **Lanzar el contenedor:**
   ```bash
   docker compose up --build
-  ```
