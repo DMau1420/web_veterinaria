@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # 1. El servicio de la Base de Datos (Usa la imagen oficial, no necesita Dockerfile)
   db:

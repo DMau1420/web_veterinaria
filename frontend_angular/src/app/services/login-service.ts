@@ -7,12 +7,12 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class LoginService {
-  private apiUrl = 'http://127.0.0.1:8000/login';
+  private apiUrl = 'http://127.0.0.1:8000';
 
   constructor(private http: HttpClient, private router: Router) {}
 
   login(credenciales: { identificador: string; password: string }): Observable<any> {
-    return this.http.post(this.apiUrl, credenciales);
+    return this.http.post(this.apiUrl + '/login', credenciales);
   }
 
   logout() {

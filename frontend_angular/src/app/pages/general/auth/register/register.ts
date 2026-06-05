@@ -11,14 +11,14 @@ import { RegisterService } from '../../../../services/register.service';
   styleUrl: './register.css',
 })
 export class Register {
-  
+
   usuario = {
     nombre: '',
     apellidos: '',
     email: '',
     password: '',
     telefono: '',
-    rol: 'USER' 
+    rol: 'USER'
   };
   mensajeError: string = '';
 
@@ -47,7 +47,7 @@ export class Register {
 
     this.registerService.registrarUsuario(payload).subscribe({
       next: (response: any) => {
-        this.router.navigate(['/login']);  
+        this.router.navigate(['/login']);
       },
       error: (error: any) => {
         console.error('Error al registrar:', error);

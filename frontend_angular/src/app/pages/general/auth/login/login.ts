@@ -26,9 +26,9 @@ export class Login {
 
         const rol = response.usuario?.rol;
         if (rol === 'ADMIN') {
-          this.router.navigate(['/dashboard']);  
+          this.router.navigate(['/dashboard']);
         } else {
-          this.router.navigate(['/dashboard-user']);  
+          this.router.navigate(['/dashboard-user']);
         }
       },
       error: (error: any) => {
