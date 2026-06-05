@@ -68,5 +68,5 @@ El proyecto está completamente contenerizado, aislando el Frontend, la API y la
    cd web_veterinaria
 
 2. **Lanzar el contenedor:**
-  ```bash
-  docker compose up --build
+   ```bash
+   docker compose up --build
